@@ -16,6 +16,7 @@
 |
 */
 
+const { NONAME } = require("dns");
 const path = require("path");
 const entryFile = path.resolve(__dirname, "client", "src", "index.js");
 const outputDir = path.resolve(__dirname, "client", "dist");
@@ -60,6 +61,10 @@ module.exports = {
   },
   resolve: {
     extensions: ["*", ".js", ".jsx"],
+    fallback: {
+      path: require.resolve("path-browserify"),
+      os: require.resolve("os-browserify/browser"),
+    },
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
   devServer: {

@@ -1,0 +1,23 @@
+.Food-title-margin {
+  margin: 1cm;
+}
+
+.Food-top-margin {
+  margin-top: 0.4cm;
+}
+
+.Food-bottom-margin {
+  margin-bottom: 0.4cm;
+}
+
+.Food-gridmargin {
+  margin: 0.4cm;
+}
+
+.Food-radius {
+  border-radius: 20px;
+}
+
+.Food-container {
+  padding: 0.4cm;
+}

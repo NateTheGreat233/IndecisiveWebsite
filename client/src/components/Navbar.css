@@ -1,0 +1,38 @@
+.Navbar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  height: 2cm;
+  background-color: var(--primary);
+}
+
+.Navbar-title {
+  font-size: var(--xl);
+  cursor: pointer;
+}
+
+.Navbar-link:hover {
+  color: var(--primary--dim);
+}
+
+.Navbar-link {
+  font-size: var(--l);
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 0.5cm;
+  margin-right: 0.5cm;
+}
+
+.Navbar-link:hover {
+  color: var(--primary--dim);
+  text-decoration: underline;
+}
+
+.Navbar-item {
+  display: flex;
+  flex-direction: row;
+  margin-left: 1cm;
+  margin-right: 1cm;
+}

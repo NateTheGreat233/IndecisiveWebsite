@@ -1,25 +1,8 @@
-/**
-* Welcome to your ✨𝔲𝔱𝔦𝔩𝔦𝔱𝔶 𝔰𝔱𝔶𝔩𝔢𝔰✨!
-* This file includes utility classes that are super simple
-* and can be used to add general styles; variable definitions
-* for colors; and styles to html, body, and other high level
-* DOMs.
-* 
-* All utility classes start with a `u-` and all do
-* one basic CSS thing (for example, making the font-weight
-* 600 for bolding) or are super generic.
-* 
-* This is 𝙉𝙊𝙏 the place to define classes for components or
-* do rigorous styling. You shoud not need to change this file
-* much after initial creation.
-*/
-
-/* TODO: REPLACE WITH YOUR OWN FONT! */
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
 :root {
-  --primary: #396dff;
-  --primary--dim: #6987db;
+  --primary: #4c788a;
+  --primary--dim: #e2e9ec;
   --darkgrey: #d4d4d4;
   --medgrey: #e0e0e0;
   --grey: #f7f7f7;
@@ -29,13 +12,26 @@
   --s: 8px;
   --m: 16px;
   --l: 24px;
+  --xl: 32px;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 300;
+}
+
+.u-poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+.u-primary {
+  color: var(--primary);
+}
+
+.u-primary--dim {
+  color: var(--primary--dim);
 }
 
 form {
@@ -46,17 +42,20 @@ form {
   display: flex;
 }
 
-.u-flexColumn {
-  display: flex;
-  flex-direction: column;
-}
-
 .u-flex-justifyCenter {
   justify-content: center;
 }
 
+.u-flex-justifyLeft {
+  justify-content: left;
+}
+
 .u-flex-alignCenter {
   align-items: center;
+}
+
+.u-no-resize {
+  flex-shrink: 0;
 }
 
 .u-inlineBlock {
@@ -69,6 +68,10 @@ form {
 
 .u-textCenter {
   text-align: center;
+}
+
+.u-textLeft {
+  text-align: left;
 }
 
 .u-relative {
@@ -87,4 +90,46 @@ form {
 
 .u-link:hover {
   color: var(--primary--dim);
+}
+
+.u-white {
+  color: white;
+}
+
+.u-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.u-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.u-large-text {
+  font-size: 45px;
+}
+
+.u-medium-text {
+  font-size: 30px;
+}
+
+.u-small-text {
+  font-size: 15px;
+}
+
+.u-tiny-text {
+  font-size: 5px;
+}
+
+.u-full-width {
+  width: 100%;
+}
+
+.u-full-height {
+  height: 100%;
+}
+
+.u-scroll-y {
+  overflow-y: auto;
 }

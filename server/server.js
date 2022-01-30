@@ -18,6 +18,8 @@
 const validator = require("./validator");
 validator.checkSetup();
 
+require("dotenv").config();
+
 //import libraries needed for the webserver to work!
 const http = require("http");
 const express = require("express"); // backend framework for our node server.
