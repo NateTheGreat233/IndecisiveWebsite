@@ -24,9 +24,6 @@ const express = require("express");
 // import models so we can interact with the database
 const User = require("./models/user");
 
-// import authentication library
-const auth = require("./auth");
-
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
 
