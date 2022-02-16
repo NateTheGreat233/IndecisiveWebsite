@@ -39,6 +39,7 @@ app.use(validator.checkRoutes);
 app.use(express.json());
 
 // set up a session, which will persist login data across requests
+/*
 app.use(
   session({
     secret: "session-secret",
@@ -46,6 +47,7 @@ app.use(
     saveUninitialized: false,
   })
 );
+*/
 
 // connect user-defined routes
 app.use("/api", api);
@@ -80,6 +82,6 @@ const port = process.env.PORT | 3000;
 const server = http.Server(app);
 //socketManager.init(server);
 
-server.listen(port, server, () => {
+server.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });
