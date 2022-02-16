@@ -15,10 +15,6 @@
   "author": "",
   "license": "ISC",
   "homepage": "",
-  "engines": {
-    "node": "16.x",
-    "npm": "8.x"
-  },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.8.1",
