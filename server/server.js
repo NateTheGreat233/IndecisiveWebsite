@@ -40,6 +40,7 @@ const mongoConnectionURL = "FILL ME IN";
 const databaseName = "FILL ME IN";
 
 // connect to mongodb
+/*
 mongoose
   .connect(mongoConnectionURL, {
     useNewUrlParser: true,
@@ -48,7 +49,7 @@ mongoose
   })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
-
+*/
 // create a new express server
 const app = express();
 app.use(validator.checkRoutes);
