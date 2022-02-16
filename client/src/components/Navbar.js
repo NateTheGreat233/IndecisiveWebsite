@@ -26,8 +26,22 @@ const Navbar = () => {
         >
           Food
         </div>
-        <div className="Navbar-link u-white">Activity</div>
-        <div className="Navbar-link u-white">Music</div>
+        <div
+          className="Navbar-link u-white"
+          onClick={() => {
+            navigate("/activity");
+          }}
+        >
+          Activity
+        </div>
+        <div
+          className="Navbar-link u-white"
+          onClick={() => {
+            navigate("/music");
+          }}
+        >
+          Music
+        </div>
       </div>
     </div>
   );

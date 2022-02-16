@@ -23,13 +23,13 @@ import { ExternalLinkIcon } from "@chakra-ui/icons";
 import Navbar from "../Navbar";
 
 import "../../utilities.css";
-import "./Food.css";
+import "./Activity.css";
 
 import { useFoodList } from "../../hooks/useFoodList";
 import { useRestaurantGenerator } from "../../hooks/useRestaurantGenerator";
 import { useRecipeGenerator } from "../../hooks/useRecipeGenerator";
 
-const Food = () => {
+const Activity = () => {
   const { selectedFoodType, foodTypeList, selectRandomFood } = useFoodList();
   const { selectedRestaurant, getRestaurants } = useRestaurantGenerator();
   const { selectedRecipe, getRecipes } = useRecipeGenerator();
@@ -49,11 +49,13 @@ const Food = () => {
   return (
     <div>
       <Navbar />
+      <Text>Still in progress!</Text>
       {/* <Text className="u-flex u-flex-justifyCenter u-large-text u-bold Food-title-margin">
         <b>
           Hungry but don't know <i>what</i> to eat? Look no further
         </b>
       </Text> */}
+      {/*
       <Grid
         h="700px"
         templateRows="repeat(7, 1fr)"
@@ -247,8 +249,9 @@ const Food = () => {
           ) : null}
         </GridItem>
       </Grid>
+                */}
     </div>
   );
 };
 
-export default Food;
+export default Activity;

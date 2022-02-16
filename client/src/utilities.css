@@ -96,6 +96,10 @@ form {
   color: white;
 }
 
+.u-white-background {
+  background-color: white;
+}
+
 .u-row {
   display: flex;
   flex-direction: row;

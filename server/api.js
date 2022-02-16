@@ -13,7 +13,11 @@ const yelpClient = yelp.client(YELP_API_KEY);
 
 const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
 
+const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+
 const fetch = require("node-fetch");
+const request = require("request");
 
 const express = require("express");
 
@@ -58,6 +62,49 @@ router.get("/recipes", (req, res) => {
     .then((data) => {
       res.send(data);
     });
+});
+
+router.get("/spotifyToken", (req, res) => {
+  const authOptions = {
+    url: "https://accounts.spotify.com/api/token",
+    headers: {
+      Authorization:
+        "Basic " + Buffer.from(SPOTIFY_CLIENT_ID + ":" + SPOTIFY_CLIENT_SECRET).toString("base64"),
+    },
+    form: {
+      grant_type: "client_credentials",
+    },
+    json: true,
+  };
+  request.post(authOptions, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      res.send(body);
+    }
+  });
+});
+
+router.get("/genres", (req, res) => {
+  let options = {
+    url: "https://api.spotify.com/v1/recommendations/available-genre-seeds",
+    headers: { Authorization: "Bearer " + req.query.token },
+    json: true,
+  };
+  request.get(options, function (error, response, body) {
+    res.send(body);
+  });
+});
+
+router.get("/songs", (req, res) => {
+  let options = {
+    url: `https://api.spotify.com/v1/recommendations?seed_artists=${req.query.artists}&seed_genres=${req.query.genres}`,
+    headers: { Authorization: "Bearer " + req.query.token },
+    json: true,
+  };
+  console.log(options.url);
+  request.get(options, function (error, response, body) {
+    console.log(body);
+    res.send(body);
+  });
 });
 
 // anything else falls to this "not found" case

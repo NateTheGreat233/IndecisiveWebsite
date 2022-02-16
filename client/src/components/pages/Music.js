@@ -11,16 +11,19 @@ import {
   Image,
   Stack,
   InputGroup,
-  InputLeftAddon,
   Input,
   Grid,
   GridItem,
   Link,
+  Select,
 } from "@chakra-ui/react";
 
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 import Navbar from "../Navbar";
+import SongCard from "../SongCard";
+
+import { get } from "../../utilities";
 
 import "../../utilities.css";
 import "./Food.css";
@@ -28,8 +31,9 @@ import "./Food.css";
 import { useFoodList } from "../../hooks/useFoodList";
 import { useRestaurantGenerator } from "../../hooks/useRestaurantGenerator";
 import { useRecipeGenerator } from "../../hooks/useRecipeGenerator";
+import { useMusicGenerator } from "../../hooks/useMusicGenerator";
 
-const Food = () => {
+const Music = () => {
   const { selectedFoodType, foodTypeList, selectRandomFood } = useFoodList();
   const { selectedRestaurant, getRestaurants } = useRestaurantGenerator();
   const { selectedRecipe, getRecipes } = useRecipeGenerator();
@@ -42,18 +46,33 @@ const Food = () => {
   const [loadingRecipe, setLoadingRecipe] = useState(false);
   const [empty, setEmpty] = useState(false);
 
+  const [token, setToken] = useState(undefined);
+  const {
+    selectedGenre,
+    getGenre,
+    selectedSong,
+    getSong,
+    previewAudio,
+    isPlaying,
+    setIsPlaying,
+    playlist,
+    getPlaylist,
+  } = useMusicGenerator();
+  const [loadingGenre, setLoadingGenre] = useState(false);
+  const [loadingSong, setLoadingSong] = useState(false);
+  const [loadingPlaylist, setLoadingPlaylist] = useState(false);
+  const [songGenre, setSongGenre] = useState(undefined);
+
   useEffect(() => {
     document.body.style.backgroundColor = "#f7f7f7";
-  });
+    get("/api/spotifyToken").then((token) => {
+      setToken(token.access_token);
+    });
+  }, []);
 
   return (
     <div>
       <Navbar />
-      {/* <Text className="u-flex u-flex-justifyCenter u-large-text u-bold Food-title-margin">
-        <b>
-          Hungry but don't know <i>what</i> to eat? Look no further
-        </b>
-      </Text> */}
       <Grid
         h="700px"
         templateRows="repeat(7, 1fr)"
@@ -70,14 +89,19 @@ const Food = () => {
           <Button
             size="lg"
             backgroundColor="white"
+            loadingText="Generating"
+            isLoading={loadingGenre}
             onClick={() => {
-              selectRandomFood();
+              setLoadingGenre(true);
+              getGenre({ token: token, setGenre: true }).then((res) => {
+                setLoadingGenre(false);
+              });
             }}
           >
-            Generate Random Cuisine
+            Generate Random Genre
           </Button>
           <Text className="u-full-height u-flex u-column u-flex-justifyCenter u-large-text">
-            {selectedFoodType}
+            {selectedGenre}
           </Text>
         </GridItem>
         <GridItem
@@ -86,12 +110,12 @@ const Food = () => {
           bg="#e2e9ec"
           className="Food-container u-flex u-column u-flex-alignCenter Food-radius u-bold u-medium-text"
         >
-          <Text>Generate Restaurant</Text>
+          <Text>Generate Random Playlist</Text>
           <Stack spacing="0.2cm">
             <InputGroup className="Food-top-margin">
               <Input
                 variant="outline"
-                placeholder="Type of food (optional)"
+                placeholder="Genre (optional)"
                 backgroundColor="#FFFFFF"
                 onChange={(e) => {
                   setType(e.target.value);
@@ -101,7 +125,7 @@ const Food = () => {
             <InputGroup>
               <Input
                 variant="outline"
-                placeholder="City"
+                placeholder="Artist (optional)"
                 backgroundColor="#FFFFFF"
                 onChange={(e) => {
                   setLocation(e.target.value);
@@ -109,12 +133,12 @@ const Food = () => {
               />
             </InputGroup>
           </Stack>
-          <Text className="u-textCenter u-small-text Food-top-margin">Distance (miles)</Text>
+          <Text className="u-textCenter u-small-text Food-top-margin">Songs</Text>
           <Slider
-            defaultValue={5}
+            defaultValue={15}
             width="50%"
             min={1}
-            max={20}
+            max={100}
             step={1}
             onChange={(v) => setSliderValue(v)}
             onMouseEnter={() => setShowTooltip(true)}
@@ -131,31 +155,26 @@ const Food = () => {
               placement="top"
               zIndex={1}
               isOpen={showTooltip}
-              label={sliderValue + (sliderValue > 1 ? " miles" : " mile")}
+              label={sliderValue + (sliderValue > 1 ? " songs" : " song")}
             >
               <SliderThumb boxSize={3} />
             </Tooltip>
           </Slider>
           <Button
-            isLoading={loadingRestaurant}
+            isLoading={loadingPlaylist}
+            disabled={true}
             className="Food-top-margin u-no-resize"
             backgroundColor="white"
-            loadingText="Generating"
+            loadingText="Generating Playlist"
             size="lg"
             onClick={() => {
-              setLoadingRestaurant(true);
-              setEmpty(false);
-              getRestaurants({
-                term: type,
-                location: location,
-                radius: Math.floor(sliderValue * 1609.34),
-              }).then((res) => {
-                setEmpty(res.status == "empty");
-                setLoadingRestaurant(false);
+              setLoadingPlaylist(true);
+              getPlaylist({ token: token, genres: "pop", artists: "" }).then((res) => {
+                setLoadingPlaylist(false);
               });
             }}
           >
-            Generate Random Restaurant
+            Generate Playlist (Work in progress!)
           </Button>
           <div className="Food-top-margin u-full-width u-textCenter u-flex u-column u-flex-alignCenter u-scroll-y">
             {selectedRestaurant ? (
@@ -204,45 +223,87 @@ const Food = () => {
             className="u-flex u-no-resize Food-bottom-margin"
             loadingText="Generating"
             backgroundColor="white"
-            isLoading={loadingRecipe}
+            isLoading={loadingSong}
             size="lg"
             onClick={() => {
-              setLoadingRecipe(true);
-              getRecipes({ number: 5 }).then(() => {
-                setLoadingRecipe(false);
-              });
+              if (previewAudio) {
+                previewAudio.pause();
+                setIsPlaying(false);
+              }
+              setLoadingSong(true);
+              if (songGenre == undefined) {
+                getGenre({ token: token, setGenre: false }).then((res) => {
+                  console.log(res);
+                  getSong({ token: token, genres: res.toLowerCase() }).then((res) => {
+                    setLoadingSong(false);
+                  });
+                });
+              } else {
+                getSong({ token: token, genres: songGenre.toLowerCase() }).then((res) => {
+                  setLoadingSong(false);
+                });
+              }
             }}
           >
-            Generate Random Recipe
+            Generate Random Song
           </Button>
-          {selectedRecipe ? (
-            <div className="u-flex u-column u-flex-alignCenter u-scroll-y">
-              <Link
-                href={selectedRecipe.sourceUrl}
-                className="u-textCenter Food-top-margin"
-                isExternal
-              >
-                {selectedRecipe.title}
-                <ExternalLinkIcon mx="2px" />
-              </Link>
-              <Image src={selectedRecipe.image} className="Food-radius" fit="contain"></Image>
+          <Select
+            placeholder="Genre (optional)"
+            backgroundColor="white"
+            className="u-textCenter Food-bottom-margin"
+            w="50%"
+            onChange={(e) => {
+              setSongGenre(e.target.value);
+            }}
+          >
+            <option value="pop">Pop</option>
+            <option value="hip-hop">Hip Hop</option>
+            <option value="classical">Classical</option>
+          </Select>
+          {selectedSong ? (
+            <div className="u-flex u-column u-full-width u-textCenter u-flex-alignCenter u-scroll-y">
+              <SongCard
+                selectedSong={selectedSong}
+                previewAudio={previewAudio}
+                setIsPlaying={setIsPlaying}
+                isPlaying={isPlaying}
+              />
+              {/*
+              {console.log(selectedSong)}
               <Text className="Food-top-margin u-medium-text">
-                <b>Ingredients</b>
+                <b>{selectedSong.name}</b>
               </Text>
-              <div className="u-textCenter u-small-text">
-                {selectedRecipe.extendedIngredients.map((ingredient, index) => (
-                  <Text key={index}>
-                    <b>-</b>
-                    {ingredient.original}
+              <div className="u-flex u-row">
+                {selectedSong.artists.map((artist, index) => (
+                  <Text key={index} className="u-small-text" display="inline-block">
+                    {artist.name}
+                    {index == selectedSong.artists.length - 1 ? "" : ","}&nbsp;
                   </Text>
                 ))}
               </div>
-              <Text className="Food-top-margin u-textCenter u-medium-text">
-                <b>Instructions</b>
-              </Text>
-              <Text className="u-textCenter u-small-text u-flex u-textLeft">
-                {selectedRecipe.instructions}
-              </Text>
+              <Image
+                src={selectedSong.album.images[1].url}
+                className="Food-radius Food-top-margin"
+                fit="contain"
+              ></Image>
+              {previewAudio ? (
+                <Button
+                  className="u-flex u-no-resize Food-top-margin"
+                  backgroundColor="white"
+                  size="lg"
+                  onClick={() => {
+                    if (isPlaying) {
+                      setIsPlaying(false);
+                      previewAudio.pause();
+                    } else {
+                      setIsPlaying(true);
+                      previewAudio.play();
+                    }
+                  }}
+                >
+                  Preview Song
+                </Button>
+                ) : null}*/}
             </div>
           ) : null}
         </GridItem>
@@ -251,4 +312,4 @@ const Food = () => {
   );
 };
 
-export default Food;
+export default Music;
