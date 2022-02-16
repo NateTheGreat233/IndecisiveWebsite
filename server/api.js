@@ -6,6 +6,7 @@
 | This file defines the routes for your server.
 |
 */
+require("dotenv").config();
 
 const yelp = require("yelp-fusion");
 const YELP_API_KEY = process.env.YELP_API_KEY;
@@ -26,8 +27,6 @@ const User = require("./models/user");
 
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
-
-require("dotenv").config();
 
 //initialize socket
 const socketManager = require("./server-socket");
